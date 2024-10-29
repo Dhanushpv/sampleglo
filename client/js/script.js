@@ -97,20 +97,26 @@ async function ApplicationView() {
         
             row += `
                 <div class="row g-4">
-                    <div class="col-sm-12 col-md-8 d-flex align-items-center">
-                        <img class="flex-shrink-0 img-fluid border rounded" 
-                            src="${data[i].imageInput}" 
-                            alt="${data[i].jobTitle} image" 
-                            style="width: 80px; height: 80px;" 
-                            ;">
+                    <div class="col-sm-12 col-md-12 d-flex align-items-center justify-content-between">
+                       
 
 
-                        <div class="text-start ps-4">
-                            <h5 class="mb-3">${data[i].name}</h5>
-                            <div class="text-truncate me-3"><i class=" text-primary me-2"></i>${data[i].email}</div>
-                            <div class="text-truncate me-3"><i class=" text-primary me-2"></i>${data[i].profolio}</div>
-                            <div class="text-truncate me-0"><i class=" text-primary me-2"></i>${data[i].coverleter.slice(0,100)+"...."}</div>
+                        <div class="text-start ps-4 d-flex align-items-center ">
+                            <div>
+                            <img class="flex-shrink-0 img-fluid border rounded" src="${data[i].imageInput}" alt="${data[i].jobTitle} image" style="width: 80px; height: 80px;";>
+                            </div>
+                            <div class="">
+                                <div class="px-5"><h5 class="mb-3">${data[i].name}</h5></div>
+                                <div class="text-truncate me-3 px-5"><i class=" text-primary me-2"></i>${data[i].email}</div>
+                                <div class="text-truncate me-3 px-5"><i class=" text-primary me-2"></i>${data[i].portfolio}</div>
+                               <div class="text-truncate me-0 px-5"><i class="text-primary me-2"></i>${data[i].coverLetter}
+                                    </div>
+
+                            </div>
                         </div>
+                        <div class="delete" onClick="deleteApplication('${data[i]._id}')" ><img src ="https://img.icons8.com/?size=100&id=67884&format=png&color=FA5252" style="width : 30px; height:30px;"></div>
+
+
                     </div>
                    
                 </div>
@@ -289,10 +295,11 @@ async function View(){
     }
     
 }
+
 function applyNow(id) {
     window.location = `job-detail.html?id=${id}`;
 }
-// Function to fetch and display job details
+
 async function showDetails() {
     console.log("Fetching job details...");
 
@@ -400,7 +407,6 @@ async function showDetails() {
     }
 }
 
-
 async function access() {
 
     console.log("reached....")
@@ -472,4 +478,40 @@ async function loginControll(event){
    }
  
 }
+
+async function deleteApplication(id) {
+    
+    console.log("id reached......",id)
+
+    let params = new URLSearchParams(window.location.search);
+    // let id = params.get('id');
+    let token_key = params.get('login');
+    console.log("token_key",token_key);
+
+    let token = localStorage.getItem(token_key)
+
+    try {
+        let response = await fetch(`/purgeUser/${id}`,{
+            method : 'DELETE',
+            headers : {
+                'Authorization' : `Bearer ${token}`
+            }
+        });
+        console.log("response :",response)
+
+        if(response.status===200){
+            alert("Employee successfully deleted ");
+            window.location=`applicationVeiw.html?login=${token_key}`
+
+        }else{
+            alert("Something went wrong ");
+        }
+    } catch (error) {
+        console.log("error",error);
+    }
+
+}
+
+
+
 
